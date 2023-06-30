@@ -66,9 +66,9 @@ namespace HealthCare_BigbangAPI.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(ActionResult<UserDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ActionResult<Doctor>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UserDTO>> GetAllDoctors()
+        public async Task<ActionResult<Doctor>> GetAllDoctors()
         {
             var doctors = await _doctorRepo.GetAll();
 
@@ -98,6 +98,73 @@ namespace HealthCare_BigbangAPI.Controllers
             return BadRequest("Doctor not present");
 
         }
+        [HttpPut]
+        [ProducesResponseType(typeof(Doctor), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Doctor>> UpdateDoctorDetails(int doctorID, DoctorDTO doctor)
+        {
+            var existingDoctor = await _doctorRepo.Get(doctorID);
+            if (existingDoctor == null)
+            {
+                return NotFound();
+            }
 
+            existingDoctor.DoctorName = doctor.DoctorName;
+            existingDoctor.DOB = doctor.DOB;
+            existingDoctor.Age = doctor.Age;
+            existingDoctor.Gender = doctor.Gender;
+            existingDoctor.PhoneNo = doctor.PhoneNo;
+            existingDoctor.Email = doctor.Email;
+            existingDoctor.Specialization = doctor.Specialization;
+            existingDoctor.Experience = doctor.Experience;
+
+            var updatedDoctor = await _doctorRepo.Update(existingDoctor);
+            if (updatedDoctor != null)
+            {
+                return Ok(updatedDoctor);
+            }
+
+            return BadRequest("Unable to update the doctor");
+        }
+
+
+
+
+        [HttpGet("GetById")]
+        [ProducesResponseType(typeof(ActionResult<Doctor>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Doctor>> GetDoctorById(int doctorID)
+        {
+            var doctor = await _doctorRepo.Get(doctorID);
+            try
+            {
+                if (doctor != null)
+                    return Ok(doctor);
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Not able to get doctor detail based on ID");
+            }
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(typeof(ActionResult<Doctor>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+
+        public async Task<ActionResult<Doctor>> DeleteDoctor(int doctorID)
+        {
+            var doctor = await _doctorRepo.Delete(doctorID);
+            try
+            {
+                if (doctor != null)
+                    return Ok("Doctor details deleted successfully");
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Not able to delete doctor details");
+            }
+        }
     }
 }

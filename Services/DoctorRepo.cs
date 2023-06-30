@@ -79,22 +79,24 @@ namespace HealthCare_BigbangAPI.Services
             return null;
         }
 
-        public async Task<Doctor?> Update(Doctor item)
+        public async Task<Doctor> Update(Doctor item)
         {
             try
             {
-                var doc = await Get(item.DoctorId);
-                if (doc != null)
+                var existingDoctor = await _context.Doctors.FindAsync(item.DoctorId);
+                if (existingDoctor != null)
                 {
-                    doc.DoctorId = item.DoctorId;
-                    doc.DoctorName = item.DoctorName;
-                    doc.User = item.User;
-                    doc.Email = item.Email;
-                    doc.PhoneNo = item.PhoneNo;
-                    doc.DOB = item.DOB;
-                    doc.Age = item.Age;
-                    doc.Gender = item.Gender;
-                    return doc;
+                    existingDoctor.DoctorName = item.DoctorName;
+                    existingDoctor.User = item.User;
+                    existingDoctor.Email = item.Email;
+                    existingDoctor.PhoneNo = item.PhoneNo;
+                    existingDoctor.DOB = item.DOB;
+                    existingDoctor.Age = item.Age;
+                    existingDoctor.Gender = item.Gender;
+
+                    await _context.SaveChangesAsync(); // Save the changes to the database
+
+                    return existingDoctor;
                 }
             }
             catch (Exception ex)

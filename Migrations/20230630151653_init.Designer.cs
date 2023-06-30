@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HealthCare_BigbangAPI.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20230630150453_init")]
+    [Migration("20230630151653_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
